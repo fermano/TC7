@@ -1,0 +1,8 @@
+release:
+  default_channel: internal
+
+review:
+  stale_after_days: 5
+
+ownership:
+  fallback_owner: engineering-ops
