@@ -50,6 +50,34 @@ class TicketWorkflowSeedTests(unittest.TestCase):
             {"owner": "billing-ops", "status": "queued"},
         )
 
+    def test_summary_default_shape_ignores_source(self):
+        self.assertEqual(
+            delivery_summary(
+                {"owner": "billing-ops", "status": "queued", "source": "csv"}
+            ),
+            {"owner": "billing-ops", "status": "queued"},
+        )
+
+    def test_summary_includes_trimmed_source_when_requested(self):
+        self.assertEqual(
+            delivery_summary(
+                {"owner": "billing-ops", "status": "queued", "source": " csv "},
+                include_source=True,
+            ),
+            {"owner": "billing-ops", "status": "queued", "source": "csv"},
+        )
+
+    def test_summary_omits_missing_or_blank_source_when_requested(self):
+        for source in (None, "", "   "):
+            with self.subTest(source=source):
+                record = {"owner": "billing-ops", "status": "queued"}
+                if source is not None:
+                    record["source"] = source
+                self.assertEqual(
+                    delivery_summary(record, include_source=True),
+                    {"owner": "billing-ops", "status": "queued"},
+                )
+
 
 if __name__ == "__main__":
     unittest.main()
