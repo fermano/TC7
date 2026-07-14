@@ -20,9 +20,14 @@ def filter_delivery_records(records: list[dict], owners: list[str] | None) -> li
     ]
 
 
-def delivery_summary(record: dict) -> dict:
+def delivery_summary(record: dict, include_source: bool = False) -> dict:
     """Return the stable summary fields currently exposed to callers."""
-    return {
+    summary = {
         "owner": normalize_delivery_owner(record.get("owner")),
         "status": record["status"],
     }
+    if include_source:
+        source = (record.get("source") or "").strip()
+        if source:
+            summary["source"] = source
+    return summary
